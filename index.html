@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sepoit Дэлгүүр</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .cart-sidebar {
+            transition: transform 0.3s ease-out;
+        }
+
+        #checkoutModal {
+            backdrop-filter: blur(5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow-lg">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold text-blue-600">БӨӨНИЙ ДЭЛГҮҮР</h1>
+                <div class="flex items-center space-x-4">
+                    <button id="cartButton" class="relative text-gray-600 hover:text-blue-600">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span id="cartCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 rounded-full">0</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Product Grid -->
+    <main class="container mx-auto px-6 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Product Card 1 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden product-card">
+                <div class="overflow-hidden">
+                    <img src="https://source.unsplash.com/400x300/?vegetables" alt="Ногоо" class="w-full h-48 object-cover product-image">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg mb-2">Шинэ ногоо</h3>
+                    <p class="text-gray-600 text-sm mb-4">Өндөр чанартай органик ногоо</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-600 font-bold">5,000₮</span>
+                        <button onclick="addToCart('Ногоо', 5000, this)" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                            <i class="fas fa-cart-plus"></i> Нэмэх
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Card 2 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden product-card">
+                <div class="overflow-hidden">
+                    <img src="https://source.unsplash.com/400x300/?gloves" alt="Бээлий" class="w-full h-48 object-cover product-image">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg mb-2">Ажлын бээлий</h3>
+                    <p class="text-gray-600 text-sm mb-4">Химийн бодист тэсвэртэй</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-600 font-bold">25,000₮</span>
+                        <button onclick="addToCart('Бээлий', 25000, this)" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                            <i class="fas fa-cart-plus"></i> Нэмэх
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div id="cartSidebar" class="cart-sidebar fixed top-0 right-0 h-full w-96 bg-white shadow-xl transform translate-x-full">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Таны сагс</h2>
+                <button onclick="closeCart()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="cartItems" class="space-y-4 overflow-y-auto h-96">
+                <!-- Cart items will be populated here -->
+            </div>
+            <div class="mt-6 border-t pt-4">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="font-bold">Нийт дүн:</span>
+                    <span id="cartTotal" class="font-bold text-blue-600">0₮</span>
+                </div>
+                <button onclick="checkout()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
+                    <i class="fas fa-credit-card"></i> Төлбөр төлөх
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="hidden fixed inset-0 bg-black bg-opacity-50 items-center justify-center">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full">
+            <h3 class="text-xl font-bold mb-4">Төлбөрийн мэдээлэл</h3>
+            <form id="checkoutForm" class="space-y-4">
+                <input type="text" placeholder="Нэр" class="w-full p-2 border rounded">
+                <input type="email" placeholder="И-мэйл" class="w-full p-2 border rounded">
+                <input type="tel" placeholder="Утасны дугаар" class="w-full p-2 border rounded">
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                    Баталгаажуулах
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Сагсны функцууд
+        function updateCart() {
+            // Сагсны тоолуур
+            document.getElementById('cartCount').textContent = cart.length;
+            
+            // Сагсны жагсаалт
+            const cartItems = document.getElementById('cartItems');
+            cartItems.innerHTML = '';
+            
+            let total = 0;
+            
+            cart.forEach((item, index) => {
+                total += item.price * item.quantity;
+                
+                const itemHTML = `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                        <div>
+                            <h4 class="font-semibold">${item.name}</h4>
+                            <p class="text-sm text-gray-500">${item.price.toLocaleString()}₮ x ${item.quantity}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="updateQuantity(${index}, -1)" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span>${item.quantity}</span>
+                            <button onclick="updateQuantity(${index}, 1)" class="text-green-500 hover:text-green-700">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                cartItems.insertAdjacentHTML('beforeend', itemHTML);
+            });
+            
+            document.getElementById('cartTotal').textContent = `${total.toLocaleString()}₮`;
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function addToCart(name, price, button) {
+            const existingItem = cart.find(item => item.name === name);
+            
+            if(existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    name: name,
+                    price: price,
+                    quantity: 1
+                });
+            }
+            
+            // Нэмэх анимейшн
+            button.classList.add('bg-green-500');
+            setTimeout(() => button.classList.remove('bg-green-500'), 500);
+            
+            updateCart();
+            openCart();
+        }
+
+        function updateQuantity(index, change) {
+            cart[index].quantity += change;
+            
+            if(cart[index].quantity < 1) {
+                cart.splice(index, 1);
+            }
+            
+            updateCart();
+        }
+
+        // Сагсны цонх
+        function openCart() {
+            document.getElementById('cartSidebar').classList.remove('translate-x-full');
+        }
+
+        function closeCart() {
+            document.getElementById('cartSidebar').classList.add('translate-x-full');
+        }
+
+        // Төлбөрийн цонх
+        function checkout() {
+            document.getElementById('checkoutModal').classList.remove('hidden');
+        }
+
+        // Event listeners
+        document.getElementById('cartButton').addEventListener('click', openCart);
+        document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Таны захиалга амжилттай хүлээн авлаа!');
+            cart = [];
+            updateCart();
+            document.getElementById('checkoutModal').classList.add('hidden');
+            closeCart();
+        });
+
+        // Анхны сагсны утга
+        updateCart();
+    </script>
+</body>
+</html>

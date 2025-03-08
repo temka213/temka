@@ -1,0 +1,103 @@
+/* Суурь стиллүүд */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Тайппед текст анимейшн */
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.wrapper .first-text {
+    font-size: 1.5rem;
+    color: #333;
+    margin-right: 0.5rem;
+}
+
+.wrapper .sec-texts {
+    height: 2.5rem;
+    line-height: 2.5rem;
+    overflow: hidden;
+}
+
+.sec-texts li {
+    position: relative;
+    top: 0;
+    font-size: 1.5rem;
+    color: #3B82F6;
+    list-style: none;
+    padding: 0 20px;
+    animation: slide 12s steps(4) infinite;
+}
+
+@keyframes slide {
+    100% { top: -10rem; }
+}
+
+.sec-texts li span::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    border-left: 2px solid #3B82F6;
+    animation: typing 1.5s steps(10) infinite alternate;
+}
+
+@keyframes typing {
+    100% {
+        left: 100%;
+        margin: 0 -35px 0 35px;
+    }
+}
+
+/* Чатбот стиллүүд */
+.chatbot-message {
+    max-width: 80%;
+    word-wrap: break-word;
+    margin-bottom: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 1rem;
+}
+
+.user-message {
+    background-color: #3B82F6;
+    color: white;
+    margin-left: auto;
+}
+
+.bot-message {
+    background-color: #F3F4F6;
+    color: #1F2937;
+}
+
+/* Бүтээгдэхүүн картууд */
+.product-card {
+    transition: transform 0.2s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Сагсны тоолуур */
+.cart-counter {
+    top: -0.5rem;
+    right: -0.5rem;
+    font-size: 0.75rem;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .category-menu {
+        display: none;
+    }
+}
